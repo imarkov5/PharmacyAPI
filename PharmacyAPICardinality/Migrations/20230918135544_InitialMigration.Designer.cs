@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PharmacyAPICardinality.Repository;
+using PharmacyAPICardinality.Database;
 
 #nullable disable
 
 namespace PharmacyAPICardinality.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230914180615_DbSetPharmacyAddressRenamed")]
-    partial class DbSetPharmacyAddressRenamed
+    [Migration("20230918135544_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,33 +25,7 @@ namespace PharmacyAPICardinality.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("PharmacyAPICardinality.Models.Patient", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PatientAddressId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PatientAddressId");
-
-                    b.ToTable("Patients");
-                });
-
-            modelBuilder.Entity("PharmacyAPICardinality.Models.PatientAddress", b =>
+            modelBuilder.Entity("PharmacyAPICardinality.Models.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -62,6 +36,9 @@ namespace PharmacyAPICardinality.Migrations
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PharmacyId")
+                        .HasColumnType("int");
 
                     b.Property<string>("State")
                         .IsRequired()
@@ -77,7 +54,10 @@ namespace PharmacyAPICardinality.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PatientAddress");
+                    b.HasIndex("PharmacyId")
+                        .IsUnique();
+
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("PharmacyAPICardinality.Models.Pharmacist", b =>
@@ -98,7 +78,7 @@ namespace PharmacyAPICardinality.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Pharmacists");
+                    b.ToTable("Pharmacist");
                 });
 
             modelBuilder.Entity("PharmacyAPICardinality.Models.Pharmacy", b =>
@@ -124,43 +104,7 @@ namespace PharmacyAPICardinality.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Pharmacies");
-                });
-
-            modelBuilder.Entity("PharmacyAPICardinality.Models.PharmacyAddress", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PharmacyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Street")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Zip")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PharmacyId")
-                        .IsUnique()
-                        .HasFilter("[PharmacyId] IS NOT NULL");
-
-                    b.ToTable("PharmacyAdresses");
+                    b.ToTable("Pharmacy");
                 });
 
             modelBuilder.Entity("PharmacyAPICardinality.Models.Prescription", b =>
@@ -170,6 +114,9 @@ namespace PharmacyAPICardinality.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DispensedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Dosage")
                         .IsRequired()
@@ -186,13 +133,14 @@ namespace PharmacyAPICardinality.Migrations
                     b.Property<int>("IsDispensed")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PatientId")
-                        .HasColumnType("int");
+                    b.Property<string>("PatientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PharmacistId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PharmacyId")
+                    b.Property<int>("PharmacyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Quantity")
@@ -201,62 +149,39 @@ namespace PharmacyAPICardinality.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientId");
-
                     b.HasIndex("PharmacistId");
 
                     b.HasIndex("PharmacyId");
 
-                    b.ToTable("Prescriptions");
+                    b.ToTable("Prescription");
                 });
 
-            modelBuilder.Entity("PharmacyAPICardinality.Models.Patient", b =>
-                {
-                    b.HasOne("PharmacyAPICardinality.Models.PatientAddress", "Address")
-                        .WithMany("Patients")
-                        .HasForeignKey("PatientAddressId");
-
-                    b.Navigation("Address");
-                });
-
-            modelBuilder.Entity("PharmacyAPICardinality.Models.PharmacyAddress", b =>
+            modelBuilder.Entity("PharmacyAPICardinality.Models.Address", b =>
                 {
                     b.HasOne("PharmacyAPICardinality.Models.Pharmacy", "Pharmacy")
                         .WithOne("PharmacyAddress")
-                        .HasForeignKey("PharmacyAPICardinality.Models.PharmacyAddress", "PharmacyId");
+                        .HasForeignKey("PharmacyAPICardinality.Models.Address", "PharmacyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Pharmacy");
                 });
 
             modelBuilder.Entity("PharmacyAPICardinality.Models.Prescription", b =>
                 {
-                    b.HasOne("PharmacyAPICardinality.Models.Patient", "Patient")
-                        .WithMany("Prescriptions")
-                        .HasForeignKey("PatientId");
-
                     b.HasOne("PharmacyAPICardinality.Models.Pharmacist", "Pharmacist")
                         .WithMany("Prescriptions")
                         .HasForeignKey("PharmacistId");
 
                     b.HasOne("PharmacyAPICardinality.Models.Pharmacy", "Pharmacy")
                         .WithMany("Prescriptions")
-                        .HasForeignKey("PharmacyId");
-
-                    b.Navigation("Patient");
+                        .HasForeignKey("PharmacyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Pharmacist");
 
                     b.Navigation("Pharmacy");
-                });
-
-            modelBuilder.Entity("PharmacyAPICardinality.Models.Patient", b =>
-                {
-                    b.Navigation("Prescriptions");
-                });
-
-            modelBuilder.Entity("PharmacyAPICardinality.Models.PatientAddress", b =>
-                {
-                    b.Navigation("Patients");
                 });
 
             modelBuilder.Entity("PharmacyAPICardinality.Models.Pharmacist", b =>

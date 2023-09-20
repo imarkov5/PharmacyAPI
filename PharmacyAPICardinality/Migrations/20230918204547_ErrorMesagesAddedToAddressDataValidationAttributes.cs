@@ -5,7 +5,7 @@
 namespace PharmacyAPICardinality.Migrations
 {
     /// <inheritdoc />
-    public partial class ClinicianRemoved : Migration
+    public partial class ErrorMesagesAddedToAddressDataValidationAttributes : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

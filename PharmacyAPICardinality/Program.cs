@@ -1,6 +1,6 @@
 global using PharmacyAPICardinality.Models;
 global using Microsoft.EntityFrameworkCore;
-global using PharmacyAPICardinality.Repository;
+global using PharmacyAPICardinality.Database;
 global using PharmacyAPICardinality.DTOs;
 global using PharmacyAPICardinality.Services;
 
@@ -10,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<DataContext>();
 builder.Services.AddScoped<IPharmacyService, PharmacyService>();
+builder.Services.AddScoped<IPharmacistService, PharmacistService>();
+builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

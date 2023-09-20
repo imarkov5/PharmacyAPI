@@ -1,5 +1,4 @@
 ﻿
-
 namespace PharmacyAPICardinality.Services
 {
     public interface IPharmacyService

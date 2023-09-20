@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace PharmacyAPICardinality.Models
@@ -15,8 +15,8 @@ namespace PharmacyAPICardinality.Models
 
         public DateTime UpdatedDate { get; set; } = DateTime.Now;
         [JsonIgnore]
-        public PharmacyAddress PharmacyAddress{ get; set; } = new PharmacyAddress();
+        public Address PharmacyAddress{ get; set; } = new Address();
         [JsonIgnore]
-        public IList<Prescription>? Prescriptions { get; set; } = new List<Prescription>();
+        public IList<Prescription> Prescriptions { get; } = new List<Prescription>();
     }
 }

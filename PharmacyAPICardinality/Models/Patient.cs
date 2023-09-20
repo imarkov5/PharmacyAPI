@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
+﻿
 namespace PharmacyAPICardinality.Models
 {
     public class Patient
@@ -8,8 +7,8 @@ namespace PharmacyAPICardinality.Models
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
 
-        public int? PatientAddressId { get; set; }
-        public PatientAddress Address { get; set; } = null!;
-        public ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
+        /*public int AddressId { get; set; }
+        public Address Address { get; set; }
+        public IList<Prescription> Prescriptions { get; } = new List<Prescription>();*/
     }
 }

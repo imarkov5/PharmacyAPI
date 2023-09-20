@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-
+﻿
 namespace PharmacyAPICardinality.Services
 {
     public class PharmacyService : IPharmacyService
@@ -18,7 +17,7 @@ namespace PharmacyAPICardinality.Services
                 CreatedDate = DateTime.UtcNow,
                 UpdatedDate = DateTime.UtcNow,
             };
-            var address = new PharmacyAddress
+            var address = new Address
             {
                 Street = request.Address.Street,
                 City = request.Address.City,
@@ -27,44 +26,32 @@ namespace PharmacyAPICardinality.Services
                 Pharmacy = newPharmacy
             };
 
-            var prescriptions = request.Prescriptions.Select(rx => new Prescription
-            {
-                DrugName = rx.DrugName,
-                DrugStrength = rx.DrugStrength,
-                Dosage = rx.Dosage,
-                Quantity = rx.Quantity,
-                IsDispensed = rx.IsDispensed,
-                Pharmacy = newPharmacy
-
-            }).ToList();
-
             newPharmacy.PharmacyAddress = address;
-            newPharmacy.Prescriptions = prescriptions;
 
-            _dataContext.Pharmacies.Add(newPharmacy);
+
+            _dataContext.Pharmacy.Add(newPharmacy);
             await _dataContext.SaveChangesAsync();
 
-            return await _dataContext.Pharmacies.Include(p => p.PharmacyAddress).Include(p => p.Prescriptions).ToListAsync();
+            return await _dataContext.Pharmacy.Include(p => p.PharmacyAddress).ToListAsync();
         }
 
         public async Task<List<Pharmacy>?> DeletePharmacyById(int pharmacyId)
         {
-            var pharmacy = await _dataContext.Pharmacies
+            var pharmacy = await _dataContext.Pharmacy
                 .Include(p => p.PharmacyAddress)
-                .Include(p => p.Prescriptions)
                 .FirstOrDefaultAsync(p => p.Id == pharmacyId);
 
             if(pharmacy == null) { return null; }
 
-            _dataContext.Pharmacies.Remove(pharmacy);
+            _dataContext.Pharmacy.Remove(pharmacy);
 
             await _dataContext.SaveChangesAsync();
-            return await _dataContext.Pharmacies.ToListAsync();
+            return await _dataContext.Pharmacy.ToListAsync();
         }
 
         public async Task<List<Pharmacy>> GetAllPharmacies()
         {
-            return await _dataContext.Pharmacies
+            return await _dataContext.Pharmacy
                 .Include(p => p.PharmacyAddress)
                 .Include(p => p.Prescriptions)
                 .ToListAsync();
@@ -72,7 +59,7 @@ namespace PharmacyAPICardinality.Services
 
         public async Task<Pharmacy>? GetPharmacyById(int pharmacyId)
         {
-            var pharmacy = await _dataContext.Pharmacies
+            var pharmacy = await _dataContext.Pharmacy
                 .Include(p => p.PharmacyAddress)
                 .Include(p => p.Prescriptions)
                 .FirstOrDefaultAsync(p => p.Id == pharmacyId);
@@ -85,7 +72,7 @@ namespace PharmacyAPICardinality.Services
 
         public async Task<List<Pharmacy>?> UpdatePharmacy(int pharmacyId, PharmacyDTO request)
         {
-            var pharmacy = await _dataContext.Pharmacies.FindAsync(pharmacyId);
+            var pharmacy = await _dataContext.Pharmacy.FindAsync(pharmacyId);
 
             if(pharmacy is null)
             {
@@ -95,11 +82,11 @@ namespace PharmacyAPICardinality.Services
             pharmacy.UpdatedDate = DateTime.UtcNow;
 
             await _dataContext.SaveChangesAsync();
-            return await _dataContext.Pharmacies.Include(p => p.PharmacyAddress).Include(p => p.Prescriptions).ToListAsync();
+            return await _dataContext.Pharmacy.Include(p => p.PharmacyAddress).ToListAsync();
         }
         public async Task<List<Pharmacy>?> UpdatePharmacyAddress(int pharmacyId, PharmacyDTO request)
         {
-            var pharmacy = await _dataContext.Pharmacies
+            var pharmacy = await _dataContext.Pharmacy
                 .Include(p => p.PharmacyAddress)
                 .FirstOrDefaultAsync(p => p.Id == pharmacyId);
 
@@ -114,7 +101,7 @@ namespace PharmacyAPICardinality.Services
             pharmacy.PharmacyAddress.Zip = request.Address.Zip;
 
             await _dataContext.SaveChangesAsync();
-            return await _dataContext.Pharmacies.Include(p => p.PharmacyAddress).Include(p => p.Prescriptions).ToListAsync();
+            return await _dataContext.Pharmacy.Include(p => p.PharmacyAddress).ToListAsync();
         }
     }
 }
