@@ -28,7 +28,7 @@ namespace PharmacyAPICardinality.DataValidation
             {
                 ErrorMessage += "\nAll fields must be filled.";
             }
-            if (IsDispensed != 0 || IsDispensed != 1)
+            if (IsDispensed > 1 || IsDispensed < 0)
             {
                 ErrorMessage += "\nPlease enter 0 if not dispensed, 1 - if dispensed.";
             }
@@ -37,7 +37,7 @@ namespace PharmacyAPICardinality.DataValidation
         public static string ValidateUpdatePrescriptionData(int IsDispensed)
         {
             string ErrorMessage = string.Empty;
-            if (IsDispensed != 0 || IsDispensed != 1)
+            if (IsDispensed > 1 || IsDispensed < 0)
             {
                 ErrorMessage += "\nPlease enter 0 if not dispensed, 1 - if dispensed.";
             }

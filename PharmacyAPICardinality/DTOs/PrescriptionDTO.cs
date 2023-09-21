@@ -1,4 +1,6 @@
-﻿namespace PharmacyAPICardinality.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PharmacyAPICardinality.DTOs
 {
     public record struct PrescriptionDTO(
         string PatientName,

@@ -13,26 +13,26 @@ namespace PharmacyAPICardinality.Database
         {
             optionsBuilder.UseSqlServer(_config.GetConnectionString("DatabaseConnection"));
         }
-        
+
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{
-            //modelBuilder
-                //.Entity<Address>()
-                //.HasOne(e => e.Pharmacy)
-                //.WithOne(e => e.PharmacyAddress)
-                //.OnDelete(DeleteBehavior.ClientCascade);
+        //modelBuilder
+        //.Entity<Address>()
+        //.HasOne(e => e.Pharmacy)
+        //.WithOne(e => e.PharmacyAddress)
+        //.OnDelete(DeleteBehavior.ClientCascade);
 
-            
-            /*modelBuilder
-                .Entity<Prescription>()
-                .HasOne(e => e.Pharmacy)
-                .WithMany(e => e.Prescriptions)
-                .OnDelete(DeleteBehavior.ClientCascade);
-            modelBuilder
-                .Entity<Pharmacy>()
-                .HasMany(e => e.Prescriptions)
-                .WithOne(e => e.Pharmacy)
-                .OnDelete(DeleteBehavior.ClientCascade);*/
+
+        /*modelBuilder
+            .Entity<Prescription>()
+            .HasOne(e => e.Pharmacy)
+            .WithMany(e => e.Prescriptions)
+            .OnDelete(DeleteBehavior.ClientCascade);
+        modelBuilder
+            .Entity<Pharmacy>()
+            .HasMany(e => e.Prescriptions)
+            .WithOne(e => e.Pharmacy)
+            .OnDelete(DeleteBehavior.ClientCascade);*/
 
         //}
 
@@ -42,6 +42,15 @@ namespace PharmacyAPICardinality.Database
                 .Property(p => p.NumberOfFilledPrescriptions)
                 .HasComputedColumnSql();
         }*/
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
+        }
+
+        public DbSet<User> Users { get; set; }
 
         public DbSet<Pharmacy> Pharmacy { get; set; }
         public DbSet<Address> Address { get; set; }
