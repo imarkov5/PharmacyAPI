@@ -4,8 +4,8 @@
     {
         Task<List<Prescription>> GetAllPrescriptions();
         Task<Prescription>? GetPrescriptionById(int prescriptionId);
-        Task<List<Prescription>> AddPrescription(PrescriptionDTO request);
-        Task<List<Prescription>?> UpdatePrescription(int prescriptionId, PrescriptionDTO request);
-        Task<List<Prescription>?> DeletePrescriptionById(int prescriptionId);
+        Task<Prescription> AddPrescription(PrescriptionRequestDTO request);
+        Task<Prescription>? UpdatePrescription(int prescriptionId, PrescriptionRequestDTO request);
+        //Task<List<Prescription>?> DeletePrescriptionById(int prescriptionId);
     }
 }

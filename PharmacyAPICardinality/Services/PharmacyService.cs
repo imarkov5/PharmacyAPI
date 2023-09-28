@@ -1,39 +1,32 @@
-﻿
+﻿using AutoMapper;
+
 namespace PharmacyAPICardinality.Services
 {
     public class PharmacyService : IPharmacyService
     {
         private readonly DataContext _dataContext;
-        public PharmacyService(DataContext context)
+        private readonly IMapper _mapper;
+        public PharmacyService(DataContext context, IMapper mapper)
         {
             _dataContext = context;
+            _mapper = mapper;
         }
-        public async Task<List<Pharmacy>> AddPharmacy(PharmacyDTO request)
+ 
+        public async Task<Pharmacy> AddPharmacy(PharmacyRequestDTO request)
         {
-            var newPharmacy = new Pharmacy
-            {
-                Name = request.Name,
-                NumberOfFilledPrescriptions = request.NumberOfFilledPrescriptions,
-                CreatedDate = DateTime.UtcNow,
-                UpdatedDate = DateTime.UtcNow,
-            };
-            var address = new Address
-            {
-                Street = request.Address.Street,
-                City = request.Address.City,
-                State = request.Address.State,
-                Zip = request.Address.Zip,
-                Pharmacy = newPharmacy
-            };
+            var newPharmacy = _mapper.Map<Pharmacy>(request);
 
-            newPharmacy.PharmacyAddress = address;
-
+            newPharmacy.NumberOfFilledPrescriptions = 0;
+            newPharmacy.CreatedDate = DateTime.Now;
+            newPharmacy.UpdatedDate = DateTime.Now;
+            
 
             _dataContext.Pharmacy.Add(newPharmacy);
             await _dataContext.SaveChangesAsync();
 
-            return await _dataContext.Pharmacy.Include(p => p.PharmacyAddress).ToListAsync();
+            return newPharmacy;
         }
+
 
         public async Task<List<Pharmacy>?> DeletePharmacyById(int pharmacyId)
         {
@@ -51,40 +44,46 @@ namespace PharmacyAPICardinality.Services
 
         public async Task<List<Pharmacy>> GetAllPharmacies()
         {
-            return await _dataContext.Pharmacy
+            var result = await _dataContext.Pharmacy
                 .Include(p => p.PharmacyAddress)
-                .Include(p => p.Prescriptions)
                 .ToListAsync();
+            if(result.Count == 0)
+            {
+                return null;
+            }
+            return result;
         }
 
         public async Task<Pharmacy>? GetPharmacyById(int pharmacyId)
         {
             var pharmacy = await _dataContext.Pharmacy
                 .Include(p => p.PharmacyAddress)
-                .Include(p => p.Prescriptions)
                 .FirstOrDefaultAsync(p => p.Id == pharmacyId);
             if (pharmacy == null)
             {
                 return null;
             }
+           
             return pharmacy;
         }
 
-        public async Task<List<Pharmacy>?> UpdatePharmacy(int pharmacyId, PharmacyDTO request)
+        public async Task<Pharmacy>? UpdatePharmacyName(int pharmacyId, PharmacyRequestDTO request)
         {
-            var pharmacy = await _dataContext.Pharmacy.FindAsync(pharmacyId);
+            var pharmacy = await _dataContext.Pharmacy
+                .Include(p => p.PharmacyAddress)
+                .FirstOrDefaultAsync(p => p.Id == pharmacyId);
 
             if(pharmacy is null)
             {
                 return null;
             }
             pharmacy.Name = request.Name;
-            pharmacy.UpdatedDate = DateTime.UtcNow;
+            pharmacy.UpdatedDate = DateTime.Now;
 
             await _dataContext.SaveChangesAsync();
-            return await _dataContext.Pharmacy.Include(p => p.PharmacyAddress).ToListAsync();
+            return pharmacy;
         }
-        public async Task<List<Pharmacy>?> UpdatePharmacyAddress(int pharmacyId, PharmacyDTO request)
+        public async Task<Pharmacy>? UpdatePharmacyAddress(int pharmacyId, PharmacyRequestDTO request)
         {
             var pharmacy = await _dataContext.Pharmacy
                 .Include(p => p.PharmacyAddress)
@@ -94,14 +93,14 @@ namespace PharmacyAPICardinality.Services
             {
                 return null;
             }
-            pharmacy.UpdatedDate = DateTime.UtcNow;
+            pharmacy.UpdatedDate = DateTime.Now;
             pharmacy.PharmacyAddress.Street = request.Address.Street;
             pharmacy.PharmacyAddress.City = request.Address.City;
             pharmacy.PharmacyAddress.State = request.Address.State;
             pharmacy.PharmacyAddress.Zip = request.Address.Zip;
 
             await _dataContext.SaveChangesAsync();
-            return await _dataContext.Pharmacy.Include(p => p.PharmacyAddress).ToListAsync();
+            return pharmacy;
         }
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PharmacyAPICardinality.Database;
+using PharmacyAPICardinality.Context;
 
 #nullable disable
 
@@ -130,7 +130,11 @@ namespace PharmacyAPICardinality.Migrations
                     b.Property<int>("IsDispensed")
                         .HasColumnType("int");
 
-                    b.Property<string>("PatientName")
+                    b.Property<string>("PatientFirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PatientLastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

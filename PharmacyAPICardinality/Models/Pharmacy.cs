@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace PharmacyAPICardinality.Models
@@ -7,10 +8,7 @@ namespace PharmacyAPICardinality.Models
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-
-        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public int NumberOfFilledPrescriptions { get; set; }
-
+        public int NumberOfFilledPrescriptions { get; set; } = 0;
         public DateTime CreatedDate {  get; set; } = DateTime.Now;
 
         public DateTime UpdatedDate { get; set; } = DateTime.Now;

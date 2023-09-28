@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-using Microsoft.Extensions.ObjectPool;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -18,7 +15,7 @@ namespace PharmacyAPICardinality.Services
             _config = config;
         }
 
-        public async Task<User> Login(UserDTO request)
+        public async Task<User> Login(UserRequestDTO request)
         {
             var result = await _context.Users.FirstOrDefaultAsync(u => u.Username.Equals(request.Username));
             if (result == null)
@@ -34,7 +31,7 @@ namespace PharmacyAPICardinality.Services
         }
         
 
-        public async Task<User> Register(UserDTO request)
+        public async Task<User> Register(UserRequestDTO request)
         {
             User newUser = new User();
 
@@ -47,10 +44,10 @@ namespace PharmacyAPICardinality.Services
 
             return newUser;
         }
-        public async Task<Boolean> ValidateUsername(string UsernameRequest)
+        public async Task<Boolean> IsUniqueUsername(string UsernameRequest)
         {
             var result = await _context.Users.FirstOrDefaultAsync(u => u.Username.Equals(UsernameRequest));
-            if(result != null)
+            if (result != null)
             {
                 return false;
             }

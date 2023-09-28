@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IO;
 
 namespace PharmacyAPICardinality.Controllers
 {
@@ -10,28 +8,20 @@ namespace PharmacyAPICardinality.Controllers
     public class PharmacyController : ControllerBase
     {
         private IPharmacyService _pharmacyService;
+        private readonly IMapper _mapper;
 
-        public PharmacyController(IPharmacyService pharmacyService)
+        public PharmacyController(IPharmacyService pharmacyService, IMapper mapper)
         {
             _pharmacyService = pharmacyService;
+            _mapper = mapper;
         }
         
 
         [HttpPost("add-pharmacy")]
-        public async Task<ActionResult<List<Pharmacy>>> AddNewPharmacy(PharmacyDTO request)
+        public async Task<ActionResult<Pharmacy>> AddNewPharmacy(PharmacyRequestDTO request)
         {
-            string ErrorMessage = PharmacyDataValidation.ValidatePharmacyData(request.Name);
-            ErrorMessage += AddressDataValidation.ValidateAddressData(
-                request.Address.Street,
-                request.Address.City,
-                request.Address.State,
-                request.Address.Zip);
-            if (!ErrorMessage.IsNullOrEmpty())
-            {
-                return BadRequest(ErrorMessage);
-            }
             var result = await _pharmacyService.AddPharmacy(request);
-            return Ok(result);
+            return Ok(_mapper.Map<PharmacyResponseDTO>(result));
         }
 
         [HttpGet("get-pharmacy/{id}")]
@@ -42,48 +32,45 @@ namespace PharmacyAPICardinality.Controllers
             { 
             return NotFound("Pharmacy is not found");
             }
-            return Ok(result);
+            return Ok(_mapper.Map<PharmacyResponseDTO>(result));
         }
+        
         [HttpGet("get-all-pharmacies")]
         public async Task<ActionResult<List<Pharmacy>>> GetAllPharmacies()
         {
-            return await _pharmacyService.GetAllPharmacies();
-        }
-        [HttpPut("update-pharmacy/{id}")]
-        public async Task<ActionResult<List<Pharmacy>>> UpdatePharmacy(int id, PharmacyDTO request)
-        {
-            string ErrorMessage = PharmacyDataValidation.ValidatePharmacyData(request.Name);
-            
-            if (!ErrorMessage.IsNullOrEmpty())
+            var result = await _pharmacyService.GetAllPharmacies();
+            if(result == null)
             {
-                return BadRequest(ErrorMessage);
+                NotFound("No pharmacies in the list");
             }
-            var result = await _pharmacyService.UpdatePharmacy(id, request);
+            return Ok(result.Select(p => _mapper.Map<PharmacyResponseDTO>(p)));
+                
+        }
+        
+        [HttpPut("update-pharmacy-name/{id}")]
+        public async Task<ActionResult<Pharmacy>> UpdatePharmacyName(int id, PharmacyRequestDTO request)
+        {
+            var result = await _pharmacyService.UpdatePharmacyName(id, request);
             if(result == null)
             {
                 return NotFound("Pharmacy is not found");
             }
-            return Ok(result);
+
+            return Ok(_mapper.Map<PharmacyResponseDTO>(result));
         }
+
         [HttpPut("update-pharmacy-address/{id}")]
-        public async Task<ActionResult<List<Pharmacy>>> UpdatePharmacyAddress(int id, PharmacyDTO request)
+        public async Task<ActionResult<Pharmacy>> UpdatePharmacyAddress(int id, PharmacyRequestDTO request)
         {
-            string ErrorMessage = AddressDataValidation.ValidateAddressData(
-                request.Address.Street,
-                request.Address.City,
-                request.Address.State,
-                request.Address.Zip);
-            if (!ErrorMessage.IsNullOrEmpty())
-            {
-                return BadRequest(ErrorMessage);
-            }
+
             var result = await _pharmacyService.UpdatePharmacyAddress(id, request);
             if (result == null)
             {
                 return NotFound("Pharmacy is not found");
             }
-            return Ok(result);
+            return Ok(_mapper.Map<PharmacyResponseDTO>(result));
         }
+
         [HttpDelete("delete-pharmacy/{id}")]
         public async Task<ActionResult<List<Pharmacy>>> DeletePharmacy(int id)
         {
@@ -92,7 +79,7 @@ namespace PharmacyAPICardinality.Controllers
             {
                 return NotFound("Pharmacy is not found");
             }
-            return Ok(result);
+            return Ok(result.Select(p => _mapper.Map<PharmacyResponseDTO>(p)));
         }
 
     }

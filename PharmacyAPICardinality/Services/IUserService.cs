@@ -4,8 +4,8 @@ namespace PharmacyAPICardinality.Services
 {
     public interface IUserService
     {
-        Task<User> Register(UserDTO userDTO);
-        Task<User> Login(UserDTO userDTO);
-        Task<Boolean> ValidateUsername(string UsernameRequest);
+        Task<User> Register(UserRequestDTO userDTO);
+        Task<User> Login(UserRequestDTO userDTO);
+        Task<Boolean> IsUniqueUsername(string UsernameRequest);
     }
 }

@@ -5,9 +5,9 @@ namespace PharmacyAPICardinality.Services
     {
         Task<List<Pharmacy>> GetAllPharmacies();
         Task<Pharmacy>? GetPharmacyById(int pharmacyId);
-        Task<List<Pharmacy>> AddPharmacy(PharmacyDTO request);
-        Task<List<Pharmacy>?> UpdatePharmacy(int pharmacyId, PharmacyDTO request);
-        Task<List<Pharmacy>?> UpdatePharmacyAddress(int pharmacyId, PharmacyDTO request);
+        Task<Pharmacy> AddPharmacy(PharmacyRequestDTO request);
+        Task<Pharmacy>? UpdatePharmacyName(int pharmacyId, PharmacyRequestDTO request);
+        Task<Pharmacy>? UpdatePharmacyAddress(int pharmacyId, PharmacyRequestDTO request);
         Task<List<Pharmacy>?> DeletePharmacyById(int pharmacyId);
     }
 }

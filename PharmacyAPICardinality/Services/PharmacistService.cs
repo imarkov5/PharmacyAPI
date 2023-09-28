@@ -9,7 +9,7 @@ namespace PharmacyAPICardinality.Services
         {
             _dataContext = context;
         }
-        public async Task<List<Pharmacist>> AddPharmacist(PharmacistDTO request)
+        public async Task<Pharmacist> AddPharmacist(Pharmacist request)
         {
 
             var newPharmacist = new Pharmacist
@@ -19,7 +19,7 @@ namespace PharmacyAPICardinality.Services
             };
             _dataContext.Pharmacist.Add(newPharmacist);
             await _dataContext.SaveChangesAsync();
-            return await _dataContext.Pharmacist.ToListAsync();
+            return newPharmacist;
         }
 
         public async Task<List<Pharmacist>> GetAllPharmacists()
@@ -37,7 +37,7 @@ namespace PharmacyAPICardinality.Services
             return pharmacist;
         }
 
-        public async Task<List<Pharmacist>?> UpdatePharmacist(int PharmacistId, PharmacistDTO request)
+        public async Task<Pharmacist>? UpdatePharmacist(int PharmacistId, Pharmacist request)
         {
             var pharmacist = await _dataContext.Pharmacist.FindAsync(PharmacistId);
             if(pharmacist == null)
@@ -47,7 +47,7 @@ namespace PharmacyAPICardinality.Services
             pharmacist.FirstName = request.FirstName;
             pharmacist.LastName = request.LastName;
             await _dataContext.SaveChangesAsync();
-            return await _dataContext.Pharmacist.ToListAsync();
+            return pharmacist;
         }
     }
 }

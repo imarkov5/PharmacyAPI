@@ -42,6 +42,20 @@ namespace PharmacyAPICardinality.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Address",
                 columns: table => new
                 {
@@ -70,7 +84,8 @@ namespace PharmacyAPICardinality.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PatientFirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PatientLastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DrugName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DrugStrength = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Dosage = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -111,6 +126,12 @@ namespace PharmacyAPICardinality.Migrations
                 name: "IX_Prescription_PharmacyId",
                 table: "Prescription",
                 column: "PharmacyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Username",
+                table: "Users",
+                column: "Username",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -121,6 +142,9 @@ namespace PharmacyAPICardinality.Migrations
 
             migrationBuilder.DropTable(
                 name: "Prescription");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Pharmacist");

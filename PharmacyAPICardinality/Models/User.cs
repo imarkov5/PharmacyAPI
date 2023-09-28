@@ -1,4 +1,6 @@
-﻿namespace PharmacyAPICardinality.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PharmacyAPICardinality.Models
 {
     public class User
     {

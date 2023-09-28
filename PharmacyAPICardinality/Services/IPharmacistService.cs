@@ -4,7 +4,7 @@
     {
         Task<List<Pharmacist>> GetAllPharmacists();
         Task<Pharmacist>? GetPharmacistById(int PharmacistId);
-        Task<List<Pharmacist>> AddPharmacist(PharmacistDTO request);
-        Task<List<Pharmacist>?> UpdatePharmacist(int PharmacistId, PharmacistDTO request);
+        Task<Pharmacist> AddPharmacist(Pharmacist request);
+        Task<Pharmacist>? UpdatePharmacist(int PharmacistId, Pharmacist request);
     }
 }

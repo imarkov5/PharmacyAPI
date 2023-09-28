@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PharmacyAPICardinality.Database;
+using PharmacyAPICardinality.Context;
 
 #nullable disable
 
 namespace PharmacyAPICardinality.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230921033806_AuthenticationAdded")]
-    partial class AuthenticationAdded
+    [Migration("20230928003214_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -133,7 +133,11 @@ namespace PharmacyAPICardinality.Migrations
                     b.Property<int>("IsDispensed")
                         .HasColumnType("int");
 
-                    b.Property<string>("PatientName")
+                    b.Property<string>("PatientFirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PatientLastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
