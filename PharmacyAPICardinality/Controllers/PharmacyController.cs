@@ -46,24 +46,12 @@ namespace PharmacyAPICardinality.Controllers
             return Ok(result.Select(p => _mapper.Map<PharmacyResponseDTO>(p)));
                 
         }
-        
-        [HttpPut("update-pharmacy-name/{id}")]
-        public async Task<ActionResult<Pharmacy>> UpdatePharmacyName(int id, PharmacyRequestDTO request)
-        {
-            var result = await _pharmacyService.UpdatePharmacyName(id, request);
-            if(result == null)
-            {
-                return NotFound("Pharmacy is not found");
-            }
 
-            return Ok(_mapper.Map<PharmacyResponseDTO>(result));
-        }
-
-        [HttpPut("update-pharmacy-address/{id}")]
-        public async Task<ActionResult<Pharmacy>> UpdatePharmacyAddress(int id, PharmacyRequestDTO request)
+        [HttpPut("update-pharmacy/{id}")]
+        public async Task<ActionResult<Pharmacy>> UpdatePharmacy(int id, PharmacyRequestDTO request)
         {
 
-            var result = await _pharmacyService.UpdatePharmacyAddress(id, request);
+            var result = await _pharmacyService.UpdatePharmacy(id, request);
             if (result == null)
             {
                 return NotFound("Pharmacy is not found");

@@ -63,27 +63,11 @@ namespace PharmacyAPICardinality.Services
             {
                 return null;
             }
-           
+
             return pharmacy;
         }
 
-        public async Task<Pharmacy>? UpdatePharmacyName(int pharmacyId, PharmacyRequestDTO request)
-        {
-            var pharmacy = await _dataContext.Pharmacy
-                .Include(p => p.PharmacyAddress)
-                .FirstOrDefaultAsync(p => p.Id == pharmacyId);
-
-            if(pharmacy is null)
-            {
-                return null;
-            }
-            pharmacy.Name = request.Name;
-            pharmacy.UpdatedDate = DateTime.Now;
-
-            await _dataContext.SaveChangesAsync();
-            return pharmacy;
-        }
-        public async Task<Pharmacy>? UpdatePharmacyAddress(int pharmacyId, PharmacyRequestDTO request)
+        public async Task<Pharmacy>? UpdatePharmacy(int pharmacyId, PharmacyRequestDTO request)
         {
             var pharmacy = await _dataContext.Pharmacy
                 .Include(p => p.PharmacyAddress)
@@ -93,11 +77,14 @@ namespace PharmacyAPICardinality.Services
             {
                 return null;
             }
+            pharmacy.Name = request.Name;
             pharmacy.UpdatedDate = DateTime.Now;
+
             pharmacy.PharmacyAddress.Street = request.Address.Street;
             pharmacy.PharmacyAddress.City = request.Address.City;
             pharmacy.PharmacyAddress.State = request.Address.State;
             pharmacy.PharmacyAddress.Zip = request.Address.Zip;
+
 
             await _dataContext.SaveChangesAsync();
             return pharmacy;
