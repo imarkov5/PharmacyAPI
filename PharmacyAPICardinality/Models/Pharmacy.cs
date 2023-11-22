@@ -9,12 +9,13 @@ namespace PharmacyAPICardinality.Models
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public int NumberOfFilledPrescriptions { get; set; } = 0;
+        public int? NumOfFilledRXCurrentMonth { get; set; }
         public DateTime CreatedDate {  get; set; } = DateTime.Now;
-
         public DateTime UpdatedDate { get; set; } = DateTime.Now;
         [JsonIgnore]
         public Address PharmacyAddress{ get; set; } = new Address();
         [JsonIgnore]
         public IList<Prescription> Prescriptions { get; } = new List<Prescription>();
+
     }
 }

@@ -18,6 +18,13 @@ namespace PharmacyAPICardinality.Context
             builder.Entity<User>()
                 .HasIndex(u => u.Username)
             .IsUnique();
+
+            builder.Entity<Pharmacy>(entity =>
+            {
+                entity.Property(e => e.NumOfFilledRXCurrentMonth)
+                .HasComputedColumnSql("([dbo].[countFilledRxCurrentMonth]([Id]))", false)
+                .HasColumnName("NumOfFilledRxCurrentMonth");
+            });
         }
 
         public DbSet<User> Users { get; set; }
