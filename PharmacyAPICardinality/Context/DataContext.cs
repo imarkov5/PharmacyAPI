@@ -25,6 +25,9 @@ namespace PharmacyAPICardinality.Context
                 .HasComputedColumnSql("([dbo].[countFilledRxCurrentMonth]([Id]))", false)
                 .HasColumnName("NumOfFilledRxCurrentMonth");
             });
+
+            builder.Entity<Pharmacy>()
+                .ToTable(tb => tb.HasTrigger("TriggerForComputedColumn"));
         }
 
         public DbSet<User> Users { get; set; }
